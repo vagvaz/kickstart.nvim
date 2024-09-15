@@ -704,6 +704,7 @@ require('lazy').setup({
         'ruff',
         'mypy',
         'isort',
+        'clangd',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
