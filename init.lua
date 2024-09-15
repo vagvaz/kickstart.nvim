@@ -102,7 +102,7 @@ vim.g.have_nerd_font = true
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
+vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -114,9 +114,9 @@ vim.opt.showmode = false
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
-vim.schedule(function()
-  vim.opt.clipboard = 'unnamedplus'
-end)
+-- vim.schedule(function()
+--   vim.opt.clipboard = 'unnamedplus'
+-- end)
 
 -- Enable break indent
 vim.opt.breakindent = true
@@ -157,6 +157,43 @@ vim.opt.cursorline = true
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
 
+vim.opt.tabstop = 4
+vim.opt.softtabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.expandtab = true
+
+vim.opt.undodir = os.getenv 'HOME' .. '/.vim/undodir'
+vim.opt.hlsearch = true -- highlights search results
+vim.opt.incsearch = true
+
+vim.opt.scrolloff = 4
+vim.opt.colorcolumn = '100'
+vim.opt.updatetime = 50
+
+-- prime keymaps
+-- Move lines up and down in visual mode
+vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv")
+vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv")
+
+-- J takes the next line and appends to current with this keep cursor where it is
+vim.keymap.set('n', 'J', 'mzJ`z')
+-- half a page jump keep cursor in the mid
+vim.keymap.set('n', '<C-d>', '<C-d>zz')
+vim.keymap.set('n', '<C-u>', '<C-u>zz')
+vim.keymap.set('n', 'n', 'nzzzv')
+vim.keymap.set('n', 'N', 'Nzzzv')
+-- do not overwrite copy
+vim.keymap.set('x', '<leader>p', '"_dP')
+-- to clipboard
+vim.keymap.set('n', '<leader>y', '"+y')
+vim.keymap.set('v', '<leader>y', '"+y')
+vim.keymap.set('n', '<leader>Y', '"+Y')
+
+-- deleting the void register
+vim.keymap.set('n', '<leader>d', '"_d')
+vim.keymap.set('v', '<leader>d', '"_d')
+
+vim.keymap.set('n', '<C-m>', '<cmd>silent !tmux neww tmux-sessionizer<CR>')
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -607,7 +644,22 @@ require('lazy').setup({
       local servers = {
         clangd = {},
         -- gopls = {},
-        pylsp = {},
+        pyright = {
+          filetypes = { 'python' },
+          init_options = {
+            settings = {
+              logLevel = 'debug',
+              lineLength = 100,
+              logFile = '~/.config/nvim/ruff.log',
+              lint = {
+                enable = true,
+              },
+              format = {
+                enable = true,
+              },
+            },
+          },
+        },
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -617,7 +669,9 @@ require('lazy').setup({
         -- But for many setups, the LSP (`ts_ls`) will work just fine
         -- ts_ls = {},
         --
-
+        ruff = {
+          filetypes = { 'python' },
+        },
         lua_ls = {
           -- cmd = {...},
           -- filetypes = { ...},
@@ -923,7 +977,7 @@ require('lazy').setup({
   require 'kickstart.plugins.debug',
   require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
